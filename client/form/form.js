@@ -7,6 +7,7 @@ const producerInput = document.getElementById('producer');
 const notableActorsInput = document.getElementById('notable_actors');
 const yearReleasedInput = document.getElementById('year_released');
 const posterUrlInput = document.getElementById('poster_img_url');
+const userRatingInput = document.getElementById('user_rating');
 const posterImg = document.getElementById('poster-img');
 const posterPlaceholder = document.getElementById('poster-placeholder');
 const message = document.getElementById('message');
@@ -71,6 +72,14 @@ async function handleAddMovie(event) {
         return;
     }
 
+    const userRating = userRatingInput.value ? parseInt(userRatingInput.value) : null;
+
+    if (userRating !== null && (userRating < 1 || userRating > 10)) {
+        showMessage('Rating must be between 1 and 10.');
+        userRatingInput.focus();
+        return;
+    }
+
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -79,6 +88,7 @@ async function handleAddMovie(event) {
     }
 
     try {
+        // Step 1 — Add the movie
         const response = await fetch('http://localhost:3000/movies', {
             method: 'POST',
             headers: {
@@ -93,6 +103,23 @@ async function handleAddMovie(event) {
         if (!response.ok) {
             showMessage(data.error || 'Something went wrong.');
             return;
+        }
+
+        // Step 2 — Submit rating if provided
+        if (userRating !== null) {
+            const ratingResponse = await fetch(`http://localhost:3000/movies/${data.film_id}/ratings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ root_user_rating: userRating })
+            });
+
+            if (!ratingResponse.ok) {
+                showMessage('Movie added but rating could not be saved.');
+                return;
+            }
         }
 
         showMessage('Movie added successfully!');

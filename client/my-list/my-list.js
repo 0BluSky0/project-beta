@@ -61,12 +61,13 @@ function renderMovies(movies) {
                 alt="${movie.film_name} poster"
             >
 
-            <div class="movie-info"><h2 class="movie-title">${movie.film_name}</h2>
-            <p class="movie-year">Year: ${formatYear(movie.year_released)}</p>
-            <p class="movie-director">Director: ${movie.director}</p>
-            <p class="movie-actors">Actors:${movie.notable_actors}</p>
-            <p class="movie-rating">External Rating:${movie.external_rating || "N/A"}/10</p>
-            <p class="movie-rating">Average User Rating:${movie.avg_user_rating || "No ratings yet"}</p>
+            <div class="movie-info">
+              <h2 class="movie-title">${movie.film_name}</h2>
+              <p class="movie-year">Year: ${formatYear(movie.year_released)}</p>
+              <p class="movie-director">Director: ${movie.director}</p>
+              <p class="movie-actors">Actors: ${movie.notable_actors}</p>
+              <p class="movie-rating">⭐ Avg User Rating: ${movie.avg_user_rating ? movie.avg_user_rating + '/10' : 'No ratings yet'}</p>
+              <p class="movie-rating">🌐 External Rating: ${movie.external_rating ? movie.external_rating + '/10' : 'N/A'}</p>
             </div>
         `;
 
